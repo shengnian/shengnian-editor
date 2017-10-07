@@ -34,7 +34,7 @@ export const INLINE_STYLE_BUTTONS: StyleConfigList = [
 ];
 
 export const BLOCK_TYPE_DROPDOWN: StyleConfigList = [
-  {label: '标题', style: 'unstyled'},
+  {label: '正文', style: 'unstyled'},
   {label: '一级标题', style: 'header-one'},
   {label: '二级标题', style: 'header-two'},
   {label: '三级标题', style: 'header-three'},

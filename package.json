@@ -1,6 +1,6 @@
 {
   "name": "shengnian-editor",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Shengnian React Rich Text Editor ",
   "main": "dist/shengnian-editor.js",
   "files": [
