@@ -199,7 +199,7 @@ export default class EditorToolbar extends Component {
     return (
       <ButtonGroup key={name}>
         <PopoverIconButton
-          label="Link"
+          label="链接"
           iconName="link"
           isDisabled={!shouldShowLinkButton}
           showPopover={this.state.showLinkInput}
@@ -208,7 +208,7 @@ export default class EditorToolbar extends Component {
         />
         <IconButton
           {...toolbarConfig.extraProps}
-          label="Remove Link"
+          label="删除链接"
           iconName="remove-link"
           isDisabled={!isCursorOnLink}
           onClick={this._removeLink}
@@ -222,7 +222,7 @@ export default class EditorToolbar extends Component {
     return (
       <ButtonGroup key={name}>
         <PopoverIconButton
-          label="Image"
+          label="图片"
           iconName="image"
           showPopover={this.state.showImageInput}
           onTogglePopover={this._toggleShowImageInput}
@@ -240,7 +240,7 @@ export default class EditorToolbar extends Component {
       <ButtonGroup key={name}>
         <IconButton
           {...toolbarConfig.extraProps}
-          label="Undo"
+          label="撤消"
           iconName="undo"
           isDisabled={!canUndo}
           onClick={this._undo}
@@ -248,7 +248,7 @@ export default class EditorToolbar extends Component {
         />
         <IconButton
           {...toolbarConfig.extraProps}
-          label="Redo"
+          label="重做"
           iconName="redo"
           isDisabled={!canRedo}
           onClick={this._redo}

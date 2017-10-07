@@ -133,7 +133,9 @@ export default class RichTextEditor extends Component {
     return (
       <div className={cx(styles.root, className)} style={rootStyle}>
         {editorToolbar}
-        <div className={combinedEditorClassName} style={editorStyle}>
+        <div onClick={() => {
+          this._focus()
+        }} className={combinedEditorClassName} style={editorStyle}>
           <Editor
             {...otherProps}
             blockStyleFn={composite(defaultBlockStyleFn, blockStyleFn)}
@@ -336,7 +338,7 @@ function defaultBlockStyleFn(block: ContentBlock): string {
   let result = styles.block;
   switch (block.getType()) {
     case 'unstyled':
-      return cx(result, styles.paragraph);
+      return cx('editable-unstyled', result, styles.paragraph);
     case 'blockquote':
       return cx(result, styles.blockquote);
     case 'code-block':

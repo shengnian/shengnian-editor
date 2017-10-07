@@ -27,6 +27,22 @@ var rules = [
     ],
   },
   {
+    exclude: [
+      /\.html$/,
+      /\.(js|jsx)$/,
+      /\.css$/,
+      /\.json$/,
+      /\.bmp$/,
+      /\.gif$/,
+      /\.jpe?g$/,
+      /\.png$/,
+    ],
+    loader: require.resolve('file-loader'),
+    options: {
+      name: 'fonts/[name].[ext]',
+    },
+  },
+  {
     test: /\.global\.css$/,
     use: ['style-loader', 'raw-loader'],
   },

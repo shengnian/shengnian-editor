@@ -26,24 +26,24 @@ export type ToolbarConfig = {
 };
 
 export const INLINE_STYLE_BUTTONS: StyleConfigList = [
-  {label: 'Bold', style: 'BOLD'},
-  {label: 'Italic', style: 'ITALIC'},
-  {label: 'Strikethrough', style: 'STRIKETHROUGH'},
-  {label: 'Monospace', style: 'CODE'},
-  {label: 'Underline', style: 'UNDERLINE'},
+  {label: '加粗(ctrl+b)', style: 'BOLD'},
+  {label: '斜体(ctrl+i)', style: 'ITALIC'},
+  {label: '删除线', style: 'STRIKETHROUGH'},
+  {label: '代码', style: 'CODE'},
+  {label: '下划线(ctrl+u)', style: 'UNDERLINE'},
 ];
 
 export const BLOCK_TYPE_DROPDOWN: StyleConfigList = [
-  {label: 'Normal', style: 'unstyled'},
-  {label: 'Heading Large', style: 'header-one'},
-  {label: 'Heading Medium', style: 'header-two'},
-  {label: 'Heading Small', style: 'header-three'},
-  {label: 'Code Block', style: 'code-block'},
+  {label: '标题', style: 'unstyled'},
+  {label: '一级标题', style: 'header-one'},
+  {label: '二级标题', style: 'header-two'},
+  {label: '三级标题', style: 'header-three'},
+  {label: '代码块', style: 'code-block'},
 ];
 export const BLOCK_TYPE_BUTTONS: StyleConfigList = [
-  {label: 'UL', style: 'unordered-list-item'},
-  {label: 'OL', style: 'ordered-list-item'},
-  {label: 'Blockquote', style: 'blockquote'},
+  {label: '无序列表', style: 'unordered-list-item'},
+  {label: '有序列表', style: 'ordered-list-item'},
+  {label: '引用块', style: 'blockquote'},
 ];
 
 let EditorToolbarConfig: ToolbarConfig = {

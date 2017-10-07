@@ -22,6 +22,7 @@ export default class IconButton extends Component {
     let {props} = this;
     let {className, iconName, label, children, isActive, ...otherProps} = props;
     className = cx(className, {
+      [styles.icon] : true,
       [styles.root]: true,
       [styles.isActive]: isActive,
     });
