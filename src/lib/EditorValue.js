@@ -1,9 +1,10 @@
 /* @flow */
-import {ContentState, EditorState, convertToRaw, convertFromRaw} from 'draft-js';
+import {ContentState, EditorState, convertToRaw, convertFromRaw, Modifier} from 'draft-js';
 import {stateToHTML} from 'draft-js-export-html';
 import {stateFromHTML} from 'draft-js-import-html';
 import {stateToMarkdown} from 'draft-js-export-markdown';
 import {stateFromMarkdown} from 'draft-js-import-markdown';
+import {Map} from 'immutable'
 
 import type {DraftDecoratorType as Decorator} from 'draft-js/lib/DraftDecoratorType';
 import type {Options as ImportOptions} from 'draft-js-import-html';
@@ -46,6 +47,32 @@ export default class EditorValue {
       'secondary-paste'
     );
     return new EditorValue(editorState, {[format]: markup});
+  }
+
+  setContentFromContentState(contentState: ContentState) {
+    let eidtorState = EditorState.push(
+      this._editorState,
+      contentState,
+      'change-block-data'
+    );
+
+    return new EditorValue(eidtorState)
+  }
+
+  mergeBlockData(data: Object) {
+    let newContentState = Modifier.mergeBlockData(
+      this._editorState.getCurrentContent(),
+      this._editorState.getSelection(),
+      Map(data)
+    )
+
+    let eidtorState = EditorState.push(
+      this._editorState,
+      newContentState,
+      'change-block-data'
+    );
+
+    return new EditorValue(eidtorState)
   }
 
   static createEmpty(decorator: ?Decorator): EditorValue {

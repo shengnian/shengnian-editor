@@ -15,6 +15,7 @@ import getEntityAtCursor from './getEntityAtCursor';
 import clearEntityForRange from './clearEntityForRange';
 import autobind from 'class-autobind';
 import cx from 'classnames';
+import Immutable from 'immutable'
 
 import styles from './EditorToolbar.css';
 
@@ -152,22 +153,62 @@ export default class EditorToolbar extends Component {
     );
   }
 
+
+  _onChangePrismLang (value) {
+    if (value === 'none') {
+      return;
+    }
+    let {editorState} = this.props;
+    let newContentState = Modifier.mergeBlockData(
+      editorState.getCurrentContent(),
+      editorState.getSelection(),
+      Immutable.Map({'syntax': value})
+    )
+
+    this._setCustomControlState('language-key', value)
+    this.props.onChange(
+      EditorState.push(editorState, newContentState)
+    );
+  };
+
+  _renderPrismSupportedLanguagesDropdown(toolbarConfig: ToolbarConfig) {
+    let choices = new Map(
+      (toolbarConfig.PRISM_SUPPORTED_LANGUAGES || []).map((lang) => [lang.value, {label: lang.label}])
+    )
+    return (
+      <ButtonGroup key={name}>
+        <Dropdown
+          choices={choices}
+          selectedKey={this._getCustomControlState('language-key')}
+          onChange={this._onChangePrismLang}
+        />
+      </ButtonGroup>
+    )
+  }
+
   _renderBlockTypeButtons(name: string, toolbarConfig: ToolbarConfig) {
     let blockType = this._getCurrentBlockType();
-    let buttons = (toolbarConfig.BLOCK_TYPE_BUTTONS || []).map((type, index) => (
-      <StyleButton
-        {...toolbarConfig.extraProps}
-        key={String(index)}
-        isActive={type.style === blockType}
-        label={type.label}
-        onToggle={this._toggleBlockType}
-        style={type.style}
-        className={type.className}
-      />
-    ));
-    return (
+    let buttons = (toolbarConfig.BLOCK_TYPE_BUTTONS || []).map((type, index) => {
+      return (
+        <StyleButton
+          {...toolbarConfig.extraProps}
+          key={String(index)}
+          isActive={type.style === blockType}
+          label={type.label}
+          onToggle={this._toggleBlockType}
+          style={type.style}
+          className={type.className}
+        />
+      )
+    });
+    let prismDropdown = null;
+    if (blockType === 'code-block') {
+      prismDropdown = this._renderPrismSupportedLanguagesDropdown(toolbarConfig)
+    }
+    return [
       <ButtonGroup key={name}>{buttons}</ButtonGroup>
-    );
+      , prismDropdown
+    ];
   }
 
   _renderInlineStyleButtons(name: string, toolbarConfig: ToolbarConfig) {

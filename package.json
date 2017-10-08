@@ -1,6 +1,6 @@
 {
   "name": "shengnian-editor",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "Shengnian React Rich Text Editor ",
   "main": "dist/shengnian-editor.js",
   "files": [
@@ -64,6 +64,8 @@
     "draft-js-export-markdown": "^1.2.0",
     "draft-js-import-html": "^1.2.0",
     "draft-js-import-markdown": "^1.2.0",
+    "draft-js-multidecorators": "^1.0.0",
+    "draft-js-prism": "^1.0.5",
     "draft-js-utils": "^1.2.0",
     "file-loader": "^1.1.5",
     "font-awesome": "^4.7.0",

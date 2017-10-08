@@ -10,7 +10,10 @@ var rules = [
   },
   {
     test: /\.css$/,
-    exclude: /\.global\.css$/,
+    exclude: [
+      /\.global\.css$/,
+      /prism-?(.*)\.css$/
+    ],
     use: [
       {
         loader: 'style-loader',
@@ -46,6 +49,10 @@ var rules = [
     test: /\.global\.css$/,
     use: ['style-loader', 'raw-loader'],
   },
+  {
+    test: /prism-?(.*)\.css$/,
+    use: ['style-loader', 'raw-loader'],
+  },
 ];
 
 module.exports = [{
@@ -68,15 +75,15 @@ module.exports = [{
         NODE_ENV: JSON.stringify('production'),
       },
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      beautify: true,
-      comments: true,
-      mangle: false,
-      compress: {
-        dead_code: true,
-        warnings: false,
-      },
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   beautify: true,
+    //   comments: true,
+    //   mangle: false,
+    //   compress: {
+    //     dead_code: true,
+    //     warnings: false,
+    //   },
+    // }),
   ],
 }, {
   entry: './src/demo.js',

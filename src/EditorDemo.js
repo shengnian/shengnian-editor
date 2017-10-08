@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import RichTextEditor, {createEmptyValue} from './RichTextEditor';
 import {convertToRaw} from 'draft-js';
 import autobind from 'class-autobind';
+import {Map} from 'immutable'
 
 import ButtonGroup from './ui/ButtonGroup';
 import Dropdown from './ui/Dropdown';
@@ -60,8 +61,17 @@ export default class EditorDemo extends Component {
                   <ButtonGroup key={1}>
                     <Dropdown
                       choices={choices}
-                      selectedKey={getValue('my-control-name')}
-                      onChange={(value) => setValue('my-control-name', value)}
+                      selectedKey={getValue('language-key')}
+                      onChange={(value) => {
+                        // let oldValue = this.state.value
+                        // let newValue = oldValue.mergeBlockData({'syntax': value})
+                        // let newContentState = Modifier.mergeBlockData(editorState.getCurrentContent(), editorState.getSelection(), Map({'syntax': value}) )
+                        // console.log(newContentState)
+                        // this.setState({
+                        //   value: newValue //this.state.value.setContentFromContentState(newContentState)
+                        // })
+                        setValue('language-key', value)
+                      }}
                     />
                   </ButtonGroup>
                 );
