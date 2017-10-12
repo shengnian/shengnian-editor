@@ -15,7 +15,7 @@ export type CustomControlList = Array<CustomControl>;
 
 export type StyleConfigList = Array<StyleConfig>;
 
-export type GroupName = 'INLINE_STYLE_BUTTONS' | 'BLOCK_TYPE_BUTTONS' | 'LINK_BUTTONS' | 'BLOCK_TYPE_DROPDOWN' | 'HISTORY_BUTTONS' | 'IMAGE_BUTTON';
+export type GroupName = 'INLINE_STYLE_BUTTONS' | 'BLOCK_TYPE_BUTTONS' | 'CODE_BLOCK_BUTTON' | 'LINK_BUTTONS' | 'BLOCK_TYPE_DROPDOWN' | 'HISTORY_BUTTONS' | 'IMAGE_BUTTON';
 
 export type PrismLangConfig = {
   label: string;
@@ -52,7 +52,7 @@ export const BLOCK_TYPE_BUTTONS: StyleConfigList = [
   {label: '无序列表', style: 'unordered-list-item'},
   {label: '有序列表', style: 'ordered-list-item'},
   {label: '引用块', style: 'blockquote'},
-  {label: '代码块', style: 'code-block'},
+  // {label: '代码块', style: 'code-block'},
 ];
 
 export const PRISM_SUPPORTED_LANGUAGES: PrismLangConfigList = [
@@ -186,7 +186,7 @@ export const PRISM_SUPPORTED_LANGUAGES: PrismLangConfigList = [
 ]
 
 let EditorToolbarConfig: ToolbarConfig = {
-  display: ['INLINE_STYLE_BUTTONS', 'BLOCK_TYPE_BUTTONS', 'LINK_BUTTONS', 'IMAGE_BUTTON', 'BLOCK_TYPE_DROPDOWN', 'HISTORY_BUTTONS'],
+  display: ['INLINE_STYLE_BUTTONS', 'BLOCK_TYPE_BUTTONS', 'CODE_BLOCK_BUTTON', 'LINK_BUTTONS', 'IMAGE_BUTTON', 'BLOCK_TYPE_DROPDOWN', 'HISTORY_BUTTONS'],
   INLINE_STYLE_BUTTONS,
   BLOCK_TYPE_DROPDOWN,
   BLOCK_TYPE_BUTTONS,

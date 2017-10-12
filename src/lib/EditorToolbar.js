@@ -15,7 +15,6 @@ import getEntityAtCursor from './getEntityAtCursor';
 import clearEntityForRange from './clearEntityForRange';
 import autobind from 'class-autobind';
 import cx from 'classnames';
-import Immutable from 'immutable'
 
 import styles from './EditorToolbar.css';
 
@@ -39,6 +38,7 @@ type State = {
   showLinkInput: boolean;
   showImageInput: boolean;
   customControlState: {[key: string]: string};
+  supportLangStyles: Object;
 };
 
 
@@ -92,6 +92,9 @@ export default class EditorToolbar extends Component {
         case 'HISTORY_BUTTONS': {
           return this._renderUndoRedo(groupName, toolbarConfig);
         }
+        case 'CODE_BLOCK_BUTTON': {
+          return this._renderCodeBlockButton(groupName, toolbarConfig)
+        }
       }
     });
     return (
@@ -101,6 +104,42 @@ export default class EditorToolbar extends Component {
       </div>
     );
   }
+
+  //
+  // _onChangePrismLang (value) {
+  //   if (value === 'none') {
+  //     return;
+  //   }
+  //   let {editorState} = this.props;
+  //   let newContentState = Modifier.mergeBlockData(
+  //     editorState.getCurrentContent(),
+  //     editorState.getSelection(),
+  //     Immutable.Map({'syntax': value})
+  //   )
+  //
+  //   this._setCustomControlState('language-key', value)
+  //   this.props.onChange(
+  //     EditorState.push(editorState, newContentState)
+  //   );
+  // };
+
+  // _renderPrismSupportedLanguagesDropdown(toolbarConfig: ToolbarConfig) {
+  //   let choices = new Map(
+  //     (toolbarConfig.PRISM_SUPPORTED_LANGUAGES || []).map((lang) => [lang.value, {label: lang.label}])
+  //   );
+  //   return (
+  //     <div
+  //       className='editable-prismSupportedLanguages'
+  //       // onClick={(e) => (e.stopPropagation())}
+  //       style={this.langStyles}>
+  //       <Dropdown
+  //         choices={choices}
+  //         selectedKey={this._getCustomControlState('language-key')}
+  //         // onChange={this._onChangePrismLang}
+  //       />
+  //     </div>
+  //   )
+  // }
 
   _renderCustomControls() {
     let {customControls, editorState} = this.props;
@@ -153,39 +192,6 @@ export default class EditorToolbar extends Component {
     );
   }
 
-
-  _onChangePrismLang (value) {
-    if (value === 'none') {
-      return;
-    }
-    let {editorState} = this.props;
-    let newContentState = Modifier.mergeBlockData(
-      editorState.getCurrentContent(),
-      editorState.getSelection(),
-      Immutable.Map({'syntax': value})
-    )
-
-    this._setCustomControlState('language-key', value)
-    this.props.onChange(
-      EditorState.push(editorState, newContentState)
-    );
-  };
-
-  _renderPrismSupportedLanguagesDropdown(toolbarConfig: ToolbarConfig) {
-    let choices = new Map(
-      (toolbarConfig.PRISM_SUPPORTED_LANGUAGES || []).map((lang) => [lang.value, {label: lang.label}])
-    )
-    return (
-      <ButtonGroup key={name}>
-        <Dropdown
-          choices={choices}
-          selectedKey={this._getCustomControlState('language-key')}
-          onChange={this._onChangePrismLang}
-        />
-      </ButtonGroup>
-    )
-  }
-
   _renderBlockTypeButtons(name: string, toolbarConfig: ToolbarConfig) {
     let blockType = this._getCurrentBlockType();
     let buttons = (toolbarConfig.BLOCK_TYPE_BUTTONS || []).map((type, index) => {
@@ -201,14 +207,9 @@ export default class EditorToolbar extends Component {
         />
       )
     });
-    let prismDropdown = null;
-    if (blockType === 'code-block') {
-      prismDropdown = this._renderPrismSupportedLanguagesDropdown(toolbarConfig)
-    }
-    return [
+    return (
       <ButtonGroup key={name}>{buttons}</ButtonGroup>
-      , prismDropdown
-    ];
+    );
   }
 
   _renderInlineStyleButtons(name: string, toolbarConfig: ToolbarConfig) {
@@ -271,6 +272,20 @@ export default class EditorToolbar extends Component {
         />
       </ButtonGroup>
     );
+  }
+
+  _renderCodeBlockButton(name: string, toolbarConfig: ToolbarConfig) {
+    return (
+      <ButtonGroup key={name}>
+        <IconButton
+          {...toolbarConfig.extraProps}
+          label="代码块"
+          iconName="code"
+          onClick={this._setCodeBlock}
+          focusOnClick={false}
+        />
+      </ButtonGroup>
+    )
   }
 
   _renderUndoRedo(name: string, toolbarConfig: ToolbarConfig) {
@@ -389,6 +404,15 @@ export default class EditorToolbar extends Component {
         clearEntityForRange(editorState, blockKey, startOffset, endOffset)
       );
     }
+  }
+
+  _setCodeBlock() {
+    let {editorState} = this.props;
+
+    this.props.onChange(
+      RichUtils.toggleCode(editorState)
+    );
+    this._focusEditor();
   }
 
   _getEntityAtCursor(): ?Entity {

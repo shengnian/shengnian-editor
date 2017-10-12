@@ -1,6 +1,13 @@
 /* @flow */
 import React, {Component} from 'react';
-import {CompositeDecorator, Editor, EditorState, Modifier, RichUtils, Entity} from 'draft-js';
+import {
+  CompositeDecorator,
+  Editor,
+  EditorState,
+  Modifier,
+  RichUtils,
+  Entity,
+} from 'draft-js';
 import getDefaultKeyBinding from 'draft-js/lib/getDefaultKeyBinding';
 import changeBlockDepth from './lib/changeBlockDepth';
 import changeBlockType from './lib/changeBlockType';
@@ -13,6 +20,7 @@ import EditorValue from './lib/EditorValue';
 import LinkDecorator from './lib/LinkDecorator';
 import ImageDecorator from './lib/ImageDecorator';
 import composite from './lib/composite';
+import getBlockRendererFn from './lib/getBlockRendererFn'
 import cx from 'classnames';
 import autobind from 'class-autobind';
 import EventEmitter from 'events';
@@ -193,6 +201,7 @@ type Props = {
   toolbarStyle?: Object;
 };
 
+
 export default class RichTextEditor extends Component {
   props: Props;
   _keyEmitter: EventEmitter;
@@ -201,6 +210,17 @@ export default class RichTextEditor extends Component {
     super(...arguments);
     this._keyEmitter = new EventEmitter();
     autobind(this);
+
+    this.getEditorState = () => this.props.value.getEditorState();
+
+    this.blockRendererFn = getBlockRendererFn(this.getEditorState, this._onChange);
+
+    // this.blockRenderMap = Immutable.Map({
+    //   'code-block': {
+    //     element: 'pre',
+    //     wrapper: <CodeBlockRender />,
+    //   },
+    // }).merge(DefaultDraftBlockRenderMap);
   }
 
   componentDidMount() {
@@ -279,6 +299,8 @@ export default class RichTextEditor extends Component {
             ref="editor"
             spellCheck={true}
             readOnly={readOnly}
+            blockRendererFn={this.blockRendererFn}
+            // blockRenderMap={this.blockRenderMap}
           />
         </div>
       </div>
@@ -477,7 +499,59 @@ function defaultBlockStyleFn(block: ContentBlock): string {
   }
 }
 
-// const PrismJsDecorator =
+
+// const blockRenderMap = Immutable.Map({
+//   'code-block': {
+//     // element is used during paste or html conversion to auto match your component;
+//     // it is also retained as part of this.props.children and not stripped out
+//     element: 'pre',
+//     wrapper: <CodeBlock />,
+//   },
+// });
+//
+// const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
+
+// const ImgComponent = (props) => {
+//   return (
+//     <img
+//       style={{height: '300px', width: 'auto'}}
+//       src={props.blockProps.src}
+//       alt="图片"/>
+//   )
+// }
+//
+// function extendedBlockRenderFn(contentBlock: ContentBlock) {
+//
+//   const type = contentBlock.getType();
+//
+//   if(type == 'code-block') {
+//     console.log('type', type)
+//     return {
+//       component: CodeBlockCom,  // 指定组件
+//       editable: true,  // 这里设置自定义的组件可不可以编辑，因为是图片，这里选择不可编辑
+//       // 这里的props在自定义的组件中需要用this.props.blockProps来访问
+//       props: {
+//         text: contentBlock
+//       }
+//     }
+//   }
+//
+//   // 获取到contentBlock的文本信息，可以用contentBlock提供的其它方法获取到想要使用的信息
+//   const text = contentBlock.getText();
+//   // 我们假定这里图片的文本格式为![图片名称](htt://....)
+//   let matches = text.match(/\!\[(.*)\]\((http.*)\)/);
+//   console.log(matches)
+//   if (matches) {
+//     return {
+//       component: ImgComponent,  // 指定组件
+//       editable: false,  // 这里设置自定义的组件可不可以编辑，因为是图片，这里选择不可编辑
+//       // 这里的props在自定义的组件中需要用this.props.blockProps来访问
+//       props: {
+//         src: matches[2]
+//     }
+//   };
+//   }
+// }
 
 const decorator = new MultiDecorator([
   new PrismDecorator({
