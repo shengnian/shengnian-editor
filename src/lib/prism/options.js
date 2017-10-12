@@ -1,7 +1,6 @@
-var Immutable = require('immutable');
-var Prism = require('prismjs');
-var React = require('react');
-var extend = require('extend');
+import React from 'react'
+import Prism from 'prismjs'
+import Immutable from 'immutable'
 
 /**
  Filter block to only highlight code blocks
@@ -46,7 +45,7 @@ function defaultRender(props) {
   );
 }
 
-var PrismOptions = Immutable.Record({
+const PrismOptions = Immutable.Record({
   // Default language to use
   defaultSyntax:      null,
 
@@ -63,4 +62,4 @@ var PrismOptions = Immutable.Record({
   prism:              Prism
 });
 
-module.exports = PrismOptions;
+export default PrismOptions

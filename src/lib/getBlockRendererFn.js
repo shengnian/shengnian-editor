@@ -10,8 +10,8 @@ const getBlockRendererFn = (
   topOffset,
   leftOffset,
 ) => (block) => {
-
   const type = block.getType();
+
   switch(type) {
     case 'code-block':
       return {
@@ -24,6 +24,9 @@ const getBlockRendererFn = (
           leftOffset,
         },
       };
+    case 'image': {
+      console.log('image...')
+    }
     default:
       return null;
   }

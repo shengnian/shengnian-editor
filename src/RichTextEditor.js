@@ -1,31 +1,5 @@
 /* @flow */
 import React, {Component} from 'react';
-import {
-  CompositeDecorator,
-  Editor,
-  EditorState,
-  Modifier,
-  RichUtils,
-  Entity,
-} from 'draft-js';
-import getDefaultKeyBinding from 'draft-js/lib/getDefaultKeyBinding';
-import changeBlockDepth from './lib/changeBlockDepth';
-import changeBlockType from './lib/changeBlockType';
-import getBlocksInSelection from './lib/getBlocksInSelection';
-import insertBlockAfter from './lib/insertBlockAfter';
-import isListItem from './lib/isListItem';
-import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
-import EditorToolbar from './lib/EditorToolbar';
-import EditorValue from './lib/EditorValue';
-import LinkDecorator from './lib/LinkDecorator';
-import ImageDecorator from './lib/ImageDecorator';
-import composite from './lib/composite';
-import getBlockRendererFn from './lib/getBlockRendererFn'
-import cx from 'classnames';
-import autobind from 'class-autobind';
-import EventEmitter from 'events';
-import {BLOCK_TYPE} from 'draft-js-utils';
-import MultiDecorator from 'draft-js-multidecorators'
 import PrismDecorator from './lib/prism'
 import Prism from 'prismjs';
 import 'prismjs/components/prism-vim.min';
@@ -153,6 +127,35 @@ import 'prismjs/components/prism-verilog.min';
 import 'prismjs/components/prism-vhdl.min';
 import 'prismjs/components/prism-wiki.min';
 import 'prismjs/components/prism-xojo.min';
+
+import {
+  CompositeDecorator,
+  Editor,
+  EditorState,
+  Modifier,
+  RichUtils,
+  Entity,
+} from 'draft-js';
+import Immutable from 'immutable'
+import getDefaultKeyBinding from 'draft-js/lib/getDefaultKeyBinding';
+import changeBlockDepth from './lib/changeBlockDepth';
+import changeBlockType from './lib/changeBlockType';
+import getBlocksInSelection from './lib/getBlocksInSelection';
+import insertBlockAfter from './lib/insertBlockAfter';
+import isListItem from './lib/isListItem';
+import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
+import EditorToolbar from './lib/EditorToolbar';
+import EditorValue from './lib/EditorValue';
+import LinkDecorator from './lib/LinkDecorator';
+import ImageDecorator from './lib/ImageDecorator';
+import composite from './lib/composite';
+import getBlockRendererFn from './lib/getBlockRendererFn'
+import MultiDecorator from './lib/MultiDecorator'
+
+import cx from 'classnames';
+import autobind from 'class-autobind';
+import EventEmitter from 'events';
+import {BLOCK_TYPE} from 'draft-js-utils';
 
 import './Draft.global.css';
 import styles from './RichTextEditor.css';
@@ -337,6 +340,9 @@ export default class RichTextEditor extends Component {
             spellCheck={true}
             readOnly={readOnly}
             blockRendererFn={this.blockRendererFn}
+            handlePastedText={(value) => (console.log('paste', value))}
+            handleDroppedFiles={(files) => (console.log('drop', files))}
+            handlePastedFiles={(files) => (console.log('file', files))}
             // blockRenderMap={this.blockRenderMap}
           />
         </div>
