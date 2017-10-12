@@ -15,7 +15,6 @@ type Props = {
 class SupportLanguagePopover extends React.PureComponent {
 
   props: Props;
-  mounted = false;
 
   constructor(...args) {
     super(...args);
@@ -23,17 +22,14 @@ class SupportLanguagePopover extends React.PureComponent {
   }
 
   componentDidMount() {
-    console.log(this.mounted)
-    if(!this.mounted) {
-      this.supportedLanguagesModal = document.createElement('div');
-      this.supportedLanguagesModal.className = 'editable-prismSupportedLanguages-wrapper'
-      // this.supportedLanguagesModal.style.position = 'relative'
-      // this.supportedLanguagesModal.style.zIndex = '9999'
-      document.body.appendChild(this.supportedLanguagesModal);
 
-      this.renderContent(this.props);
-      this.mounted = true;
-    }
+    this.supportedLanguagesModal = document.createElement('div');
+    this.supportedLanguagesModal.className = 'editable-prismSupportedLanguages-wrapper'
+    // this.supportedLanguagesModal.style.position = 'relative'
+    // this.supportedLanguagesModal.style.zIndex = '9999'
+    document.body.appendChild(this.supportedLanguagesModal);
+
+    this.renderContent(this.props);
   }
 
   componentWillReceiveProps(newProps){
@@ -44,38 +40,35 @@ class SupportLanguagePopover extends React.PureComponent {
     //act like this shit was never here ever
     ReactDOM.unmountComponentAtNode(this.supportedLanguagesModal);
     document.body.removeChild(this.supportedLanguagesModal);
-    this.mounted = false;
   }
 
   renderContent(props) {
     let choices = new Map(
       (DefaultToolbarConfig.PRISM_SUPPORTED_LANGUAGES || []).map((lang) => [lang.value, {label: lang.label}])
     );
-    let {position, selectedKey, onChange } = props;
+    let {selectedKey, onChange, position} = props;
 
     const styles = {
       position: 'fixed',
       zIndex: '1000',
-      top: position.top,
-      left: position.left,
+      top: position.top + 'px',
+      left: position.left + 'px',
       backgroundColor: '#fff'
     };
 
-    if(!this.mounted) {
-      ReactDOM.render(
-        <div
-          className='editable-prismSupportedLanguages'
-          style={styles}
-        >
-          <Dropdown
-            choices={choices}
-            selectedKey={selectedKey ? selectedKey : 'none'}
-            onChange={onChange}
-          />
-        </div>,
-        this.supportedLanguagesModal
-      );
-    }
+    ReactDOM.render(
+      <div
+        className='editable-prismSupportedLanguages'
+        style={styles}
+      >
+        <Dropdown
+          choices={choices}
+          selectedKey={selectedKey ? selectedKey : 'none'}
+          onChange={onChange}
+        />
+      </div>,
+      this.supportedLanguagesModal
+    );
   };
 
   render () {

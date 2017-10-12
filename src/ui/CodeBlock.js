@@ -1,29 +1,10 @@
 import React from 'react';
-import {EditorState, EditorBlock} from 'draft-js'
-import SupportLanguagePopover from './SupportLanguagePopover'
-
-
-const updateDataOfBlock = (editorState, block, newData) => {
-  const contentState = editorState.getCurrentContent();
-  const newBlock = block.merge({
-    data: newData,
-  });
-  const newContentState = contentState.merge({
-    blockMap: contentState.getBlockMap().set(block.getKey(), newBlock),
-  });
-  return EditorState.push(editorState, newContentState, 'change-block-type');
-};
+import {EditorBlock} from 'draft-js'
 
 export default class CodeBlock extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      position: {
-        left: '-1180px',
-        top: '-999px'
-      }
-    }
   }
 
   componentDidMount () {
@@ -35,27 +16,12 @@ export default class CodeBlock extends React.Component {
   }
 
   render() {
-    const data = this.props.block.getData();
-    const selectedKey = data.get('selectedKey');
-
-    return [
+    return (
       <EditorBlock
         key='editor-block-editor'
         {...this.props}
-      />,
-      <SupportLanguagePopover
-        key='lang-popover'
-        position={this.state.position}
-        selectedKey={selectedKey}
-        onChange={this._onChangePrismLang}
-        onShow={
-          this._showLanguages
-        }
-        onHide={
-          this._hideLanguages
-        }
       />
-    ];
+    );
 
   };
 
@@ -74,36 +40,31 @@ export default class CodeBlock extends React.Component {
 
   _showLanguages  = (e) => {
     clearTimeout(this._hideLanguagesTimeout)
-    const heightOffset = 15;
+
+    const { setPrismLangPosition, topOffset, leftOffset } = this.props.blockProps
 
     const currTarget = e.currentTarget;
     let width = currTarget.offsetWidth;
     let {top, left} = this._getPoint(e.currentTarget)
 
-    // TODO change 215 to selector width.
-    this.setState({
-      position: {
-        left: (left + width - 215),
-        top: (top + heightOffset),
-      }
-    })
+    setPrismLangPosition({
+        left: (left + width + leftOffset),
+        top: (top + topOffset),
+      })
   }
 
   _hideLanguages = (e) => {
-
-    const oElem = e.toElement || e.relatedTarget;
-    if (oElem.tagName.toLowerCase() === 'select') {
+    const toElem = e.toElement || e.relatedTarget;
+    if (toElem && toElem.tagName.toLowerCase() === 'select') {
       return;
     }
 
     this._hideLanguagesTimeout = setTimeout(() => {
-      this.setState({
-        position: {
-          left: '-1180px',
-          top: '-999px'
-        }
-      })
-    }, 350)
+      this.props.blockProps.setPrismLangPosition({
+          left: -1180,
+          top: -999
+        })
+    }, 10)
   }
 
   _bindOrRmoveMouseOver = (isBind = true) => {
@@ -125,23 +86,6 @@ export default class CodeBlock extends React.Component {
       }
     }
   }
-
-  _onChangePrismLang = (value) => {
-    if (value === 'none') {
-      return;
-    }
-    let {block, blockProps} = this.props;
-    // This is the reason we needed a higher-order function for blockRendererFn
-    const { onChange, getEditorState } = blockProps;
-
-    const data = block.getData();
-    const newData = data.set('syntax', value)
-      .set('selectedKey', value)
-    ;
-
-    onChange(updateDataOfBlock(getEditorState(), block, newData));
-  };
-
 
 };
 

@@ -165,6 +165,7 @@ import type {ImportOptions} from './lib/EditorValue';
 import ButtonGroup from './ui/ButtonGroup';
 import Button from './ui/Button';
 import Dropdown from './ui/Dropdown';
+import SupportLanguagePopover from './ui/SupportLanguagePopover'
 
 const MAX_LIST_DEPTH = 2;
 
@@ -199,21 +200,39 @@ type Props = {
   rootStyle?: Object;
   editorStyle?: Object;
   toolbarStyle?: Object;
+  topOffset?: Number;
+  leftOffset?: Number;
 };
 
+const updateDataOfBlock = (editorState, block, newData) => {
+  const contentState = editorState.getCurrentContent();
+  const newBlock = block.merge({
+    data: newData,
+  });
+  const newContentState = contentState.merge({
+    blockMap: contentState.getBlockMap().set(block.getKey(), newBlock),
+  });
+  return EditorState.push(editorState, newContentState, 'change-block-type');
+};
 
 export default class RichTextEditor extends Component {
   props: Props;
   _keyEmitter: EventEmitter;
 
-  constructor() {
-    super(...arguments);
+  constructor(props) {
+    super(props);
     this._keyEmitter = new EventEmitter();
     autobind(this);
 
     this.getEditorState = () => this.props.value.getEditorState();
 
-    this.blockRendererFn = getBlockRendererFn(this.getEditorState, this._onChange);
+    this.blockRendererFn = getBlockRendererFn(
+      this.getEditorState,
+      this._onChange,
+      this._setPrismLangPosition,
+      props.topOffset ? props.topOffset : 0,
+      props.leftOffset ? props.leftOffset : 0,
+    );
 
     // this.blockRenderMap = Immutable.Map({
     //   'code-block': {
@@ -221,6 +240,13 @@ export default class RichTextEditor extends Component {
     //     wrapper: <CodeBlockRender />,
     //   },
     // }).merge(DefaultDraftBlockRenderMap);
+
+    this.state = {
+      position: {
+        left: -1180,
+        top: -999
+      }
+    }
   }
 
   componentDidMount() {
@@ -231,6 +257,11 @@ export default class RichTextEditor extends Component {
     }
 
     this._focus();
+    this._bindOrRmoveMouseOver(true);
+  }
+
+  componentWillUnmount() {
+    this._bindOrRmoveMouseOver(false)
   }
 
   render() {
@@ -254,6 +285,12 @@ export default class RichTextEditor extends Component {
     } = this.props;
     let editorState = value.getEditorState();
     customStyleMap = customStyleMap ? {...styleMap, ...customStyleMap} : styleMap;
+
+    let selectionState = editorState.getSelection();
+    let anchorKey = selectionState.getAnchorKey();
+    let currentContent = editorState.getCurrentContent();
+    let currentContentBlock = currentContent.getBlockForKey(anchorKey);
+    let selectedKey = currentContentBlock.getData().get('selectedKey')
 
     // If the user changes block type before entering any text, we can either
     // style the placeholder or hide it. Let's just hide it for now.
@@ -303,9 +340,38 @@ export default class RichTextEditor extends Component {
             // blockRenderMap={this.blockRenderMap}
           />
         </div>
+        <SupportLanguagePopover
+          position={this.state.position}
+          selectedKey={selectedKey}
+          onChange={this._onChangePrismLang}
+        />
       </div>
     );
   }
+
+  _setPrismLangPosition = (position) => {
+    this.setState({
+      position
+    })
+  }
+
+  _onChangePrismLang = (value) => {
+    if (value === 'none') {
+      return;
+    }
+    let editorState = this.props.value.getEditorState();
+    let selectionState = editorState.getSelection();
+    let anchorKey = selectionState.getAnchorKey();
+    let currentContent = editorState.getCurrentContent();
+    let currentContentBlock = currentContent.getBlockForKey(anchorKey);
+    // This is the reason we needed a higher-order function for blockRendererFn
+    const data = currentContentBlock.getData();
+    const newData = data.set('syntax', value)
+      .set('selectedKey', value)
+    ;
+
+    this._onChange(updateDataOfBlock(editorState, currentContentBlock, newData));
+  };
 
   _shouldHidePlaceholder(): boolean {
     let editorState = this.props.value.getEditorState();
@@ -498,60 +564,6 @@ function defaultBlockStyleFn(block: ContentBlock): string {
       return result;
   }
 }
-
-
-// const blockRenderMap = Immutable.Map({
-//   'code-block': {
-//     // element is used during paste or html conversion to auto match your component;
-//     // it is also retained as part of this.props.children and not stripped out
-//     element: 'pre',
-//     wrapper: <CodeBlock />,
-//   },
-// });
-//
-// const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
-
-// const ImgComponent = (props) => {
-//   return (
-//     <img
-//       style={{height: '300px', width: 'auto'}}
-//       src={props.blockProps.src}
-//       alt="图片"/>
-//   )
-// }
-//
-// function extendedBlockRenderFn(contentBlock: ContentBlock) {
-//
-//   const type = contentBlock.getType();
-//
-//   if(type == 'code-block') {
-//     console.log('type', type)
-//     return {
-//       component: CodeBlockCom,  // 指定组件
-//       editable: true,  // 这里设置自定义的组件可不可以编辑，因为是图片，这里选择不可编辑
-//       // 这里的props在自定义的组件中需要用this.props.blockProps来访问
-//       props: {
-//         text: contentBlock
-//       }
-//     }
-//   }
-//
-//   // 获取到contentBlock的文本信息，可以用contentBlock提供的其它方法获取到想要使用的信息
-//   const text = contentBlock.getText();
-//   // 我们假定这里图片的文本格式为![图片名称](htt://....)
-//   let matches = text.match(/\!\[(.*)\]\((http.*)\)/);
-//   console.log(matches)
-//   if (matches) {
-//     return {
-//       component: ImgComponent,  // 指定组件
-//       editable: false,  // 这里设置自定义的组件可不可以编辑，因为是图片，这里选择不可编辑
-//       // 这里的props在自定义的组件中需要用this.props.blockProps来访问
-//       props: {
-//         src: matches[2]
-//     }
-//   };
-//   }
-// }
 
 const decorator = new MultiDecorator([
   new PrismDecorator({

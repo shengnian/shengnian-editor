@@ -43,6 +43,8 @@ export default class EditorDemo extends Component {
         <div className="row">
           <RichTextEditor
             value={value}
+            topOffset={20}
+            leftOffset={-215}
             onChange={this._onChange}
             className="shengnian-editor-demo"
             placeholder="Tell a story"

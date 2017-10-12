@@ -3,7 +3,14 @@ import CodeBlock from '../ui/CodeBlock'
 /*
 A higher-order function.
 */
-const getBlockRendererFn = (getEditorState, onChange) => (block) => {
+const getBlockRendererFn = (
+  getEditorState,
+  onChange,
+  setPrismLangPosition,
+  topOffset,
+  leftOffset,
+) => (block) => {
+
   const type = block.getType();
   switch(type) {
     case 'code-block':
@@ -12,6 +19,9 @@ const getBlockRendererFn = (getEditorState, onChange) => (block) => {
         props: {
           onChange,
           getEditorState,
+          setPrismLangPosition,
+          topOffset,
+          leftOffset,
         },
       };
     default:
