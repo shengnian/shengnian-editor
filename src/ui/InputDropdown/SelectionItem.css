@@ -1,0 +1,11 @@
+.item {
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+    padding: 10px;
+}
+
+/*li:hover {*/
+.item .isActive {
+    color: #fff;
+    background: #666;
+}

@@ -1,5 +1,6 @@
 /* @flow */
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom'
 import PrismDecorator from './lib/prism'
 import Prism from 'prismjs';
 import 'prismjs/components/prism-vim.min';
@@ -128,6 +129,8 @@ import 'prismjs/components/prism-vhdl.min';
 import 'prismjs/components/prism-wiki.min';
 import 'prismjs/components/prism-xojo.min';
 
+// import
+
 import {
   CompositeDecorator,
   Editor,
@@ -227,15 +230,13 @@ export default class RichTextEditor extends Component {
     this._keyEmitter = new EventEmitter();
     autobind(this);
 
-    this.getEditorState = () => this.props.value.getEditorState();
-
-    this.blockRendererFn = getBlockRendererFn(
-      this.getEditorState,
-      this._onChange,
-      this._setPrismLangPosition,
-      props.topOffset ? props.topOffset : 0,
-      props.leftOffset ? props.leftOffset : 0,
-    );
+    this.state = {
+      position: {
+        left: -1180,
+        top: -999,
+      },
+      block: null,
+    }
 
     // this.blockRenderMap = Immutable.Map({
     //   'code-block': {
@@ -243,28 +244,51 @@ export default class RichTextEditor extends Component {
     //     wrapper: <CodeBlockRender />,
     //   },
     // }).merge(DefaultDraftBlockRenderMap);
-
-    this.state = {
-      position: {
-        left: -1180,
-        top: -999
-      }
-    }
   }
 
   componentDidMount() {
-    const {autoFocus} = this.props;
+    const {autoFocus, topOffset, leftOffset} = this.props;
+
+    this.suppLanguagesPopoverWrapper = document.createElement('div');
+    document.body.appendChild(this.suppLanguagesPopoverWrapper);
+
+    this.getEditorState = () => this.props.value.getEditorState();
+
+    this.blockRendererFn = getBlockRendererFn(
+      this.getEditorState(),
+      this._onChange,
+      topOffset ? topOffset : 0,
+      leftOffset ? leftOffset : 0,
+      this._setSupportedLang,
+    );
 
     if (!autoFocus) {
       return;
     }
 
     this._focus();
-    this._bindOrRmoveMouseOver(true);
+  }
+
+  componentDidUpdate() {
+    this.renderSuppLanguages()
+  }
+
+  renderSuppLanguages = () => {
+    ReactDOM.render(
+      <SupportLanguagePopover
+        getEditorState={this.props.value.getEditorState()}
+        onChange={this._onChange}
+        block={this.state.block}
+        position={this.state.position}
+        // hidePopover={this._hidePopover}
+      />,
+      this.suppLanguagesPopoverWrapper
+    );
   }
 
   componentWillUnmount() {
-    this._bindOrRmoveMouseOver(false)
+    ReactDOM.unmountComponentAtNode(this.suppLanguagesPopoverWrapper);
+    document.body.removeChild(this.suppLanguagesPopoverWrapper);
   }
 
   render() {
@@ -288,12 +312,6 @@ export default class RichTextEditor extends Component {
     } = this.props;
     let editorState = value.getEditorState();
     customStyleMap = customStyleMap ? {...styleMap, ...customStyleMap} : styleMap;
-
-    let selectionState = editorState.getSelection();
-    let anchorKey = selectionState.getAnchorKey();
-    let currentContent = editorState.getCurrentContent();
-    let currentContentBlock = currentContent.getBlockForKey(anchorKey);
-    let selectedKey = currentContentBlock.getData().get('selectedKey')
 
     // If the user changes block type before entering any text, we can either
     // style the placeholder or hide it. Let's just hide it for now.
@@ -346,38 +364,25 @@ export default class RichTextEditor extends Component {
             // blockRenderMap={this.blockRenderMap}
           />
         </div>
-        <SupportLanguagePopover
-          position={this.state.position}
-          selectedKey={selectedKey}
-          onChange={this._onChangePrismLang}
-        />
       </div>
     );
   }
 
-  _setPrismLangPosition = (position) => {
+  _hidePopover() {
     this.setState({
-      position
+      position: {
+        top: -999,
+        left: -1180
+      },
     })
   }
 
-  _onChangePrismLang = (value) => {
-    if (value === 'none') {
-      return;
-    }
-    let editorState = this.props.value.getEditorState();
-    let selectionState = editorState.getSelection();
-    let anchorKey = selectionState.getAnchorKey();
-    let currentContent = editorState.getCurrentContent();
-    let currentContentBlock = currentContent.getBlockForKey(anchorKey);
-    // This is the reason we needed a higher-order function for blockRendererFn
-    const data = currentContentBlock.getData();
-    const newData = data.set('syntax', value)
-      .set('selectedKey', value)
-    ;
-
-    this._onChange(updateDataOfBlock(editorState, currentContentBlock, newData));
-  };
+  _setSupportedLang(suppLang) {
+    this.setState({
+      position: suppLang.position,
+      block: suppLang.block,
+    })
+  }
 
   _shouldHidePlaceholder(): boolean {
     let editorState = this.props.value.getEditorState();

@@ -56,7 +56,6 @@ export const BLOCK_TYPE_BUTTONS: StyleConfigList = [
 ];
 
 export const PRISM_SUPPORTED_LANGUAGES: PrismLangConfigList = [
-  { label: '请选择代码语言', value: 'none'},
   { label: 'vim', value: 'vim' },
   { label: 'CSS', value: 'css' },
   { label: 'JavaScript', value: 'javascript' },

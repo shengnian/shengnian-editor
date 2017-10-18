@@ -1,78 +1,145 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import autobind from 'class-autobind';
 
+import shallowCompare from '../lib/shallowEqual'
 import DefaultToolbarConfig from '../lib/EditorToolbarConfig';
-import Dropdown from './Dropdown'
+import Autocomplete from './Autocomplete'
+
+import {EditorState} from 'draft-js'
+
+import slStyles from './SupportLanguagePopover.css'
 
 type Props = {
-  position: Object,
-  selectedKey: string,
-  onChange: func,
-  onMouseOut: func,
+  getEditorState: Object,
+  onChange: Function,
+  position: Object
 };
 
-class SupportLanguagePopover extends React.PureComponent {
+const updateDataOfBlock = (editorState, block, newData) => {
+  const contentState = editorState.getCurrentContent();
+  const newBlock = block.merge({
+    data: newData,
+  });
+  const newContentState = contentState.merge({
+    blockMap: contentState.getBlockMap().set(block.getKey(), newBlock),
+  });
+  return EditorState.push(editorState, newContentState, 'change-block-type');
+};
+
+const matchStateToTerm = (state, value) => {
+  return (
+    state.value.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+    state.label.toLowerCase().indexOf(value.toLowerCase()) !== -1
+  )
+}
+
+class SupportLanguagePopover extends React.Component {
 
   props: Props;
 
-  constructor(...args) {
-    super(...args);
+  constructor(props) {
+    super(props);
     autobind(this);
+
+    this.originItems = DefaultToolbarConfig.PRISM_SUPPORTED_LANGUAGES;
+
+    this.state = {
+      items: this.originItems,
+      value: '',
+    }
+    this._value = ''
   }
 
-  componentDidMount() {
-
-    this.supportedLanguagesModal = document.createElement('div');
-    this.supportedLanguagesModal.className = 'editable-prismSupportedLanguages-wrapper'
-    // this.supportedLanguagesModal.style.position = 'relative'
-    // this.supportedLanguagesModal.style.zIndex = '9999'
-    document.body.appendChild(this.supportedLanguagesModal);
-
-    this.renderContent(this.props);
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState)
   }
 
   componentWillReceiveProps(newProps){
-    this.renderContent(newProps);
+    let {block} = newProps;
+    let syntax = block && block.getData().get('syntaxLabel');
+    this.setState({
+      value: syntax || ''
+    })
   }
 
-  componentWillUnmount(){
-    //act like this shit was never here ever
-    ReactDOM.unmountComponentAtNode(this.supportedLanguagesModal);
-    document.body.removeChild(this.supportedLanguagesModal);
-  }
-
-  renderContent(props) {
-    let choices = new Map(
-      (DefaultToolbarConfig.PRISM_SUPPORTED_LANGUAGES || []).map((lang) => [lang.value, {label: lang.label}])
-    );
-    let {selectedKey, onChange, position} = props;
+  render () {
+    let {position} = this.props;
 
     const styles = {
       position: 'fixed',
       zIndex: '1000',
-      top: position.top + 'px',
       left: position.left + 'px',
-      backgroundColor: '#fff'
+      top: position.top + 'px',
     };
 
-    ReactDOM.render(
+    return (
       <div
         className='editable-prismSupportedLanguages'
         style={styles}
       >
-        <Dropdown
-          choices={choices}
-          selectedKey={selectedKey ? selectedKey : 'none'}
-          onChange={onChange}
+        <Autocomplete
+          value={this.state.value}
+          inputProps={{
+            id: 'editable-prismSupportedLangPopover-input',
+            placeholder: '请选择语言'
+          }}
+          wrapperStyle={{ position: 'relative', display: 'inline-block' }}
+          items={DefaultToolbarConfig.PRISM_SUPPORTED_LANGUAGES}
+          getItemValue={(item) => item.value}
+          shouldItemRender={matchStateToTerm}
+          // sortItems={sortStates}
+          onChange={(event, value) => this.setState({ value })}
+          onSelect={this._onChangePrismLang}
+          renderMenu={children => (
+            <div className={slStyles.selection}>
+              {children}
+            </div>
+          )}
+          renderItem={(item, isHighlighted) => (
+            <div
+              className={`${slStyles.item} ${isHighlighted ? slStyles.highlighted : ''}`}
+              key={item.value}
+            >{item.label}</div>
+          )}
         />
-      </div>,
-      this.supportedLanguagesModal
-    );
-  };
+        {/*<InputDropdown*/}
+          {/*name='support-lang'*/}
+          {/*items={this.state.items}*/}
+          {/*displayValue={syntax && syntax.label}*/}
+          {/*onInputChange={this._onInputChange}*/}
+          {/*onItemSelected={this._onChangePrismLang}*/}
+          {/*placeholder='请选择语言'*/}
+        {/*/>*/}
+      </div>
+    )
+  }
 
-  render () {
-    return null;
+  // _onInputChange(input) {
+  //   const normalisedInput = input.toLowerCase();
+  //
+  //   const filteredArray = this.originItems.filter(item => {
+  //     return item.label.toLowerCase().indexOf(normalisedInput) === 0;
+  //   });
+  //
+  //   this.setState({ items: filteredArray });
+  // }
+
+
+  _onChangePrismLang = (value, item)=> {
+
+    if (!value) {
+      return;
+    }
+
+    let {getEditorState, block} = this.props
+
+    const data = block.getData();
+    const newData = data.set('syntax', value).set('syntaxLabel', item.label);
+
+    // this.setState({
+    //   value: item.label
+    // })
+    this.props.onChange(updateDataOfBlock(getEditorState, block, newData));
   };
 };
 

@@ -10,9 +10,7 @@ function findImageEntities(contentBlock: ContentBlock, callback: EntityRangeCall
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
     if (entityKey != null) {
-      console.log(contentState)
       let entity = contentState ? contentState.getEntity(entityKey) : null;
-      console.log(entity)
       return entity != null && entity.getType() === ENTITY_TYPE.IMAGE;
     }
     return false;

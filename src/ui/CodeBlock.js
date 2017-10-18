@@ -1,5 +1,16 @@
 import React from 'react';
-import {EditorBlock} from 'draft-js'
+import {EditorBlock, EditorState} from 'draft-js'
+
+const updateDataOfBlock = (editorState, block, newData) => {
+  const contentState = editorState.getCurrentContent();
+  const newBlock = block.merge({
+    data: newData,
+  });
+  const newContentState = contentState.merge({
+    blockMap: contentState.getBlockMap().set(block.getKey(), newBlock),
+  });
+  return EditorState.push(editorState, newContentState, 'change-block-type');
+};
 
 export default class CodeBlock extends React.Component {
 
@@ -8,6 +19,7 @@ export default class CodeBlock extends React.Component {
   }
 
   componentDidMount () {
+    // this._popoverEle = document.querySelector('div.editable-prismSupportedLanguages');
     this._bindOrRmoveMouseOver(true);
   }
 
@@ -41,29 +53,42 @@ export default class CodeBlock extends React.Component {
   _showLanguages  = (e) => {
     clearTimeout(this._hideLanguagesTimeout)
 
-    const { setPrismLangPosition, topOffset, leftOffset } = this.props.blockProps
+    const { block, blockProps } = this.props
+    const { topOffset, leftOffset, setSupportedLang, getEditorState, onChange } = blockProps
 
     const currTarget = e.currentTarget;
     let width = currTarget.offsetWidth;
-    let {top, left} = this._getPoint(e.currentTarget)
+    // let {top, left} = this._getPoint(e.currentTarget)
+    let clientRect = currTarget.getBoundingClientRect();
 
-    setPrismLangPosition({
-        left: (left + width + leftOffset),
-        top: (top + topOffset),
-      })
+    let left = clientRect.left + clientRect.width + leftOffset;
+    let top = clientRect.top + topOffset;
+
+    setSupportedLang({
+      position: {
+        left: left,
+        top: top,
+      },
+      block: block,
+    })
   }
 
   _hideLanguages = (e) => {
     const toElem = e.toElement || e.relatedTarget;
-    if (toElem && toElem.tagName.toLowerCase() === 'select') {
+    if (toElem && toElem.tagName.toLowerCase() === 'input') {
       return;
     }
+    const { block, blockProps } = this.props
+    const { setSupportedLang } = blockProps
+    // const data = block.getData();
 
     this._hideLanguagesTimeout = setTimeout(() => {
-      this.props.blockProps.setPrismLangPosition({
+      setSupportedLang({
+        position: {
           left: -1180,
           top: -999
-        })
+        }
+      })
     }, 10)
   }
 

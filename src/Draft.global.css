@@ -290,3 +290,8 @@
 .public-DraftStyleDefault-depth4.public-DraftStyleDefault-reset {
   counter-reset: ol4;
 }
+
+#editable-prismSupportedLangPopover-input {
+  outline: none;
+  padding: 2px 8px;
+}

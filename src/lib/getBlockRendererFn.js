@@ -6,9 +6,9 @@ A higher-order function.
 const getBlockRendererFn = (
   getEditorState,
   onChange,
-  setPrismLangPosition,
   topOffset,
   leftOffset,
+  setSupportedLang,
 ) => (block) => {
   const type = block.getType();
 
@@ -19,14 +19,11 @@ const getBlockRendererFn = (
         props: {
           onChange,
           getEditorState,
-          setPrismLangPosition,
           topOffset,
           leftOffset,
+          setSupportedLang,
         },
       };
-    case 'image': {
-      console.log('image...')
-    }
     default:
       return null;
   }

@@ -1,0 +1,15 @@
+.root {
+    font-family: Georgia, serif;
+    font-size: 18px;
+}
+.root,
+.root * {
+    box-sizing: border-box;
+}
+.root input {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    padding: 5px;
+    width: 100%;
+}
+

@@ -65,13 +65,6 @@ export default class EditorDemo extends Component {
                       choices={choices}
                       selectedKey={getValue('language-key')}
                       onChange={(value) => {
-                        // let oldValue = this.state.value
-                        // let newValue = oldValue.mergeBlockData({'syntax': value})
-                        // let newContentState = Modifier.mergeBlockData(editorState.getCurrentContent(), editorState.getSelection(), Map({'syntax': value}) )
-                        // console.log(newContentState)
-                        // this.setState({
-                        //   value: newValue //this.state.value.setContentFromContentState(newContentState)
-                        // })
                         setValue('language-key', value)
                       }}
                     />
