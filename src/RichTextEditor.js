@@ -66,7 +66,7 @@ import 'prismjs/components/prism-icon.min';
 import 'prismjs/components/prism-inform7.min';
 import 'prismjs/components/prism-ini.min';
 import 'prismjs/components/prism-j.min';
-import 'prismjs/components/prism-jade.min';
+// import 'prismjs/components/prism-jade.min';
 import 'prismjs/components/prism-jolie.min';
 import 'prismjs/components/prism-julia.min';
 import 'prismjs/components/prism-keyman.min';
