@@ -3,131 +3,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom'
 import PrismDecorator from './lib/prism'
 import Prism from 'prismjs';
-import 'prismjs/components/prism-vim.min';
-import 'prismjs/components/prism-css.min';
-import 'prismjs/components/prism-javascript.min';
-import 'prismjs/components/prism-jsx.min';
-import 'prismjs/components/prism-json.min';
-import 'prismjs/components/prism-markup.min';
-import 'prismjs/components/prism-java.min';
-import 'prismjs/components/prism-c.min';
-import 'prismjs/components/prism-clike.min';
-import 'prismjs/components/prism-csharp.min';
-import 'prismjs/components/prism-cpp.min';
-import 'prismjs/components/prism-go.min';
-import 'prismjs/components/prism-perl.min';
-import 'prismjs/components/prism-php.min';
-import 'prismjs/components/prism-ruby.min';
-import 'prismjs/components/prism-sass.min';
-import 'prismjs/components/prism-scss.min';
-import 'prismjs/components/prism-typescript.min';
-import 'prismjs/components/prism-yaml.min';
-import 'prismjs/components/prism-markdown.min';
-import 'prismjs/components/prism-abap.min';
-import 'prismjs/components/prism-actionscript.min';
-import 'prismjs/components/prism-ada.min';
-import 'prismjs/components/prism-apacheconf.min';
-import 'prismjs/components/prism-apl.min';
-import 'prismjs/components/prism-applescript.min';
-import 'prismjs/components/prism-arduino.min';
-import 'prismjs/components/prism-asciidoc.min';
-import 'prismjs/components/prism-aspnet.min';
-import 'prismjs/components/prism-autoit.min';
-import 'prismjs/components/prism-autohotkey.min';
-import 'prismjs/components/prism-bash.min';
-import 'prismjs/components/prism-basic.min';
-import 'prismjs/components/prism-batch.min';
-import 'prismjs/components/prism-bison.min';
-import 'prismjs/components/prism-brainfuck.min';
-import 'prismjs/components/prism-bro.min';
-import 'prismjs/components/prism-coffeescript.min';
-import 'prismjs/components/prism-crystal.min';
-// import 'prismjs/components/prism-css-extras.min';
-import 'prismjs/components/prism-d.min';
-import 'prismjs/components/prism-dart.min';
-import 'prismjs/components/prism-diff.min';
-import 'prismjs/components/prism-docker.min';
-import 'prismjs/components/prism-eiffel.min';
-import 'prismjs/components/prism-elixir.min';
-import 'prismjs/components/prism-erlang.min';
-import 'prismjs/components/prism-fsharp.min';
-import 'prismjs/components/prism-fortran.min';
-import 'prismjs/components/prism-gherkin.min';
-import 'prismjs/components/prism-git.min';
-import 'prismjs/components/prism-glsl.min';
-import 'prismjs/components/prism-graphql.min';
-import 'prismjs/components/prism-groovy.min';
-import 'prismjs/components/prism-haml.min';
-import 'prismjs/components/prism-handlebars.min';
-import 'prismjs/components/prism-haskell.min';
-import 'prismjs/components/prism-haxe.min';
-import 'prismjs/components/prism-http.min';
-import 'prismjs/components/prism-icon.min';
-import 'prismjs/components/prism-inform7.min';
-import 'prismjs/components/prism-ini.min';
-import 'prismjs/components/prism-j.min';
-// import 'prismjs/components/prism-jade.min';
-import 'prismjs/components/prism-jolie.min';
-import 'prismjs/components/prism-julia.min';
-import 'prismjs/components/prism-keyman.min';
-import 'prismjs/components/prism-kotlin.min';
-import 'prismjs/components/prism-latex.min';
-import 'prismjs/components/prism-less.min';
-import 'prismjs/components/prism-livescript.min';
-import 'prismjs/components/prism-lolcode.min';
-import 'prismjs/components/prism-lua.min';
-import 'prismjs/components/prism-makefile.min';
-import 'prismjs/components/prism-matlab.min';
-import 'prismjs/components/prism-mel.min';
-import 'prismjs/components/prism-mizar.min';
-import 'prismjs/components/prism-monkey.min';
-import 'prismjs/components/prism-n4js.min';
-import 'prismjs/components/prism-nasm.min';
-import 'prismjs/components/prism-nginx.min';
-import 'prismjs/components/prism-nim.min';
-import 'prismjs/components/prism-nix.min';
-import 'prismjs/components/prism-nsis.min';
-import 'prismjs/components/prism-objectivec.min';
-import 'prismjs/components/prism-ocaml.min';
-import 'prismjs/components/prism-opencl.min';
-import 'prismjs/components/prism-oz.min';
-import 'prismjs/components/prism-parigp.min';
-import 'prismjs/components/prism-parser.min';
-import 'prismjs/components/prism-pascal.min';
-// import 'prismjs/components/prism-php-extras.min';
-import 'prismjs/components/prism-powershell.min';
-import 'prismjs/components/prism-processing.min';
-import 'prismjs/components/prism-prolog.min';
-import 'prismjs/components/prism-properties.min';
-import 'prismjs/components/prism-protobuf.min';
-import 'prismjs/components/prism-puppet.min';
-import 'prismjs/components/prism-pure.min';
-import 'prismjs/components/prism-python.min';
-import 'prismjs/components/prism-q.min';
-import 'prismjs/components/prism-qore.min';
-import 'prismjs/components/prism-r.min';
-import 'prismjs/components/prism-renpy.min';
-import 'prismjs/components/prism-reason.min';
-import 'prismjs/components/prism-rest.min';
-import 'prismjs/components/prism-rip.min';
-import 'prismjs/components/prism-roboconf.min';
-import 'prismjs/components/prism-rust.min';
-import 'prismjs/components/prism-sas.min';
-import 'prismjs/components/prism-scala.min';
-import 'prismjs/components/prism-scheme.min';
-import 'prismjs/components/prism-smalltalk.min';
-import 'prismjs/components/prism-smarty.min';
-import 'prismjs/components/prism-sql.min';
-import 'prismjs/components/prism-stylus.min';
-import 'prismjs/components/prism-swift.min';
-import 'prismjs/components/prism-tcl.min';
-import 'prismjs/components/prism-textile.min';
-import 'prismjs/components/prism-twig.min';
-import 'prismjs/components/prism-vbnet.min';
-import 'prismjs/components/prism-verilog.min';
-import 'prismjs/components/prism-vhdl.min';
-import 'prismjs/components/prism-wiki.min';
-import 'prismjs/components/prism-xojo.min';
+import './lib/prism/prismjs'
 
 // import
 
@@ -137,9 +13,7 @@ import {
   EditorState,
   Modifier,
   RichUtils,
-  Entity,
 } from 'draft-js';
-import Immutable from 'immutable'
 import getDefaultKeyBinding from 'draft-js/lib/getDefaultKeyBinding';
 import changeBlockDepth from './lib/changeBlockDepth';
 import changeBlockType from './lib/changeBlockType';
@@ -208,17 +82,9 @@ type Props = {
   toolbarStyle?: Object;
   topOffset?: Number;
   leftOffset?: Number;
-};
-
-const updateDataOfBlock = (editorState, block, newData) => {
-  const contentState = editorState.getCurrentContent();
-  const newBlock = block.merge({
-    data: newData,
-  });
-  const newContentState = contentState.merge({
-    blockMap: contentState.getBlockMap().set(block.getKey(), newBlock),
-  });
-  return EditorState.push(editorState, newContentState, 'change-block-type');
+  onImageChange?: Function,
+  onImageRejected?: Function,
+  onImageAccepted?: Function,
 };
 
 export default class RichTextEditor extends Component {
@@ -265,30 +131,40 @@ export default class RichTextEditor extends Component {
     if (!autoFocus) {
       return;
     }
-
     this._focus();
   }
 
   componentDidUpdate() {
-    this.renderSuppLanguages()
-  }
-
-  renderSuppLanguages = () => {
-    ReactDOM.render(
-      <SupportLanguagePopover
-        getEditorState={this.props.value.getEditorState()}
-        onChange={this._onChange}
-        block={this.state.block}
-        position={this.state.position}
-        // hidePopover={this._hidePopover}
-      />,
-      this.suppLanguagesPopoverWrapper
-    );
+    this.renderSuppLanguages();
   }
 
   componentWillUnmount() {
     ReactDOM.unmountComponentAtNode(this.suppLanguagesPopoverWrapper);
     document.body.removeChild(this.suppLanguagesPopoverWrapper);
+  }
+
+  renderSuppLanguages = () => {
+
+    let editorState = this.props.value.getEditorState();
+    let selection = editorState.getSelection();
+    let b = this.state.block;
+    if (selection.isCollapsed()) {
+      let contentState = editorState.getCurrentContent();
+      let blockKey = selection.getStartKey();
+      let newBlock = contentState.getBlockForKey(blockKey);
+      b = newBlock;
+    }
+
+    ReactDOM.render(
+      <SupportLanguagePopover
+        getEditorState={this.props.value.getEditorState()}
+        onChange={this._onChange}
+        block={b}
+        position={this.state.position}
+        // hidePopover={this._hidePopover}
+      />,
+      this.suppLanguagesPopoverWrapper
+    );
   }
 
   render() {
@@ -308,6 +184,9 @@ export default class RichTextEditor extends Component {
       rootStyle,
       toolbarStyle,
       editorStyle,
+      onImageChange,
+      onImageRejected,
+      onImageAccepted,
       ...otherProps // eslint-disable-line comma-dangle
     } = this.props;
     let editorState = value.getEditorState();
@@ -334,9 +213,13 @@ export default class RichTextEditor extends Component {
           focusEditor={this._focus}
           toolbarConfig={toolbarConfig}
           customControls={customControls}
+          onImageChange={onImageChange}
+          onImageRejected={onImageRejected}
+          onImageAccepted={onImageAccepted}
         />
       );
     }
+
     return (
       <div className={cx(styles.root, className)} style={rootStyle}>
         {editorToolbar}
@@ -529,11 +412,12 @@ export default class RichTextEditor extends Component {
 
   _handleInlineImageSelection(editorState: EditorState) {
     let selection = editorState.getSelection();
+    let contentState = editorState.getCurrentContent();
     let blocks = getBlocksInSelection(editorState);
 
     const selectImage = (block, offset) => {
       const imageKey = block.getEntityAt(offset);
-      Entity.mergeData(imageKey, {selected: true});
+      contentState.mergeEntityData(imageKey, {selected: true});
     };
 
     let isInMiddleBlock = (index) => index > 0 && index < blocks.size - 1;

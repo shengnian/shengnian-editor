@@ -51,6 +51,13 @@ export default class EditorDemo extends Component {
             toolbarClassName="demo-toolbar"
             editorClassName="demo-editor"
             readOnly={this.state.readOnly}
+            onImageChange={(e, editorState, setImage) => {console.log('demo image change')}}
+            onImageRejected={(files, evt, editorState) => {console.log('demo rejected', files[0])}}
+            onImageAccepted={(files, evt, editorState, setImage) => {
+              console.log('demo accepted', files[0])
+              // If the image uploaded, call the setImage to insert image.
+              setImage('https://shengnian.github.io/favicon.ico')
+            }}
             customControls={[
               // eslint-disable-next-line no-unused-vars
               (setValue, getValue, editorState) => {
@@ -74,7 +81,7 @@ export default class EditorDemo extends Component {
               <ButtonGroup key={2}>
                 <IconButton
                   label="Remove Link"
-                  iconName="remove-link"
+                  iconName="unlink"
                   focusOnClick={false}
                   onClick={() => console.log('You pressed a button')}
                 />

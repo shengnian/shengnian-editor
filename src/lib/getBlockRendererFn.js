@@ -1,4 +1,5 @@
-import CodeBlock from '../ui/CodeBlock'
+import CodeBlock from '../ui/CodeBlock';
+import Unstyled from '../ui/Unstyled';
 
 /*
 A higher-order function.
@@ -11,7 +12,6 @@ const getBlockRendererFn = (
   setSupportedLang,
 ) => (block) => {
   const type = block.getType();
-
   switch(type) {
     case 'code-block':
       return {
@@ -24,8 +24,16 @@ const getBlockRendererFn = (
           setSupportedLang,
         },
       };
-    default:
-      return null;
+    default: {
+      return {
+        component: Unstyled,
+        props: {
+          onChange,
+          getEditorState,
+          setSupportedLang,
+        },
+      }
+    }
   }
 };
 

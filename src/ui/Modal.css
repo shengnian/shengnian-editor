@@ -1,0 +1,39 @@
+.root {
+  display: none;
+}
+
+.root.active {
+  display: block;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #000;
+  opacity: .7;
+  z-index: 100;
+}
+
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  z-index: 102;
+}
+
+.modalInner{
+  width: 50%;
+  height: 50%;
+  padding: 1rem;
+  border-radius: 0.2rem;
+  background-color: #FFF;
+  opacity: 1;
+}

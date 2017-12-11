@@ -95,3 +95,10 @@ a {
 .editor-demo .shengnian-editor-demo .public-DraftEditor-content {
   min-height: 110px;
 }
+
+
+.editor-demo blockquote {
+  padding-left: 1.2em;
+  border-left: 4px solid #e2e3e4;
+  color: #333;
+}

@@ -8,6 +8,9 @@ import {ENTITY_TYPE} from 'draft-js-utils';
 import DefaultToolbarConfig from './EditorToolbarConfig';
 import StyleButton from './StyleButton';
 import PopoverIconButton from '../ui/PopoverIconButton';
+import UploadIconButton from '../ui/UploadIconButton';
+import VideoIconButton from '../ui/VideoIconButton';
+import SymbolIconButton from '../ui/SymbolIconButton';
 import ButtonGroup from '../ui/ButtonGroup';
 import Dropdown from '../ui/Dropdown';
 import IconButton from '../ui/IconButton';
@@ -93,8 +96,21 @@ export default class EditorToolbar extends Component {
           return this._renderUndoRedo(groupName, toolbarConfig);
         }
         case 'CODE_BLOCK_BUTTON': {
-          return this._renderCodeBlockButton(groupName, toolbarConfig)
+          return this._renderCodeBlockButton(groupName, toolbarConfig);
         }
+        case 'CLEAR_BUTTON' : {
+          return this._renderClearButton(groupName, toolbarConfig);
+        }
+        // TODO video, symbol, page_break
+        // case 'VIDEO_BUTTON' : {
+        //   return this._renderVideoButton(groupName, toolbarConfig);
+        // }
+        // case 'SYMBOL_BUTTON' : {
+        //   return this._renderSymbolButton(groupName, toolbarConfig);
+        // }
+        // case 'PAGE_BREAK_BUTTON' : {
+        //   return this._renderPageBreakButton(groupName, toolbarConfig);
+        // }
       }
     });
     return (
@@ -104,42 +120,6 @@ export default class EditorToolbar extends Component {
       </div>
     );
   }
-
-  //
-  // _onChangePrismLang (value) {
-  //   if (value === 'none') {
-  //     return;
-  //   }
-  //   let {editorState} = this.props;
-  //   let newContentState = Modifier.mergeBlockData(
-  //     editorState.getCurrentContent(),
-  //     editorState.getSelection(),
-  //     Immutable.Map({'syntax': value})
-  //   )
-  //
-  //   this._setCustomControlState('language-key', value)
-  //   this.props.onChange(
-  //     EditorState.push(editorState, newContentState)
-  //   );
-  // };
-
-  // _renderPrismSupportedLanguagesDropdown(toolbarConfig: ToolbarConfig) {
-  //   let choices = new Map(
-  //     (toolbarConfig.PRISM_SUPPORTED_LANGUAGES || []).map((lang) => [lang.value, {label: lang.label}])
-  //   );
-  //   return (
-  //     <div
-  //       className='editable-prismSupportedLanguages'
-  //       // onClick={(e) => (e.stopPropagation())}
-  //       style={this.langStyles}>
-  //       <Dropdown
-  //         choices={choices}
-  //         selectedKey={this._getCustomControlState('language-key')}
-  //         // onChange={this._onChangePrismLang}
-  //       />
-  //     </div>
-  //   )
-  // }
 
   _renderCustomControls() {
     let {customControls, editorState} = this.props;
@@ -251,7 +231,7 @@ export default class EditorToolbar extends Component {
         <IconButton
           {...toolbarConfig.extraProps}
           label="删除链接"
-          iconName="remove-link"
+          iconName="unlink"
           isDisabled={!isCursorOnLink}
           onClick={this._removeLink}
           focusOnClick={false}
@@ -261,31 +241,26 @@ export default class EditorToolbar extends Component {
   }
 
   _renderImageButton(name: string) {
+    const { editorState, onImageChange, onImageRejected, onImageAccepted } = this.props
+
     return (
       <ButtonGroup key={name}>
-        <PopoverIconButton
+        <UploadIconButton
           label="图片"
-          iconName="image"
-          showPopover={this.state.showImageInput}
-          onTogglePopover={this._toggleShowImageInput}
-          onSubmit={this._setImage}
+          icon="picture"
+          accept="image/jpg,image/jpeg,image/png,image/gif"
+          onChange={(e) => {
+            return onImageChange(e, editorState, this._setImage)
+          }}
+          onChangeRejected={(files, evt) => {
+            return onImageRejected(files, evt, editorState)
+          }}
+          onChangeAccepted={(files, evt) => {
+            return onImageAccepted(files, evt, editorState, this._setImage)
+          }}
         />
       </ButtonGroup>
     );
-  }
-
-  _renderCodeBlockButton(name: string, toolbarConfig: ToolbarConfig) {
-    return (
-      <ButtonGroup key={name}>
-        <IconButton
-          {...toolbarConfig.extraProps}
-          label="代码块"
-          iconName="code"
-          onClick={this._setCodeBlock}
-          focusOnClick={false}
-        />
-      </ButtonGroup>
-    )
   }
 
   _renderUndoRedo(name: string, toolbarConfig: ToolbarConfig) {
@@ -309,6 +284,106 @@ export default class EditorToolbar extends Component {
           isDisabled={!canRedo}
           onClick={this._redo}
           focusOnClick={false}
+        />
+      </ButtonGroup>
+    );
+  }
+
+  _renderCodeBlockButton(name: string, toolbarConfig: ToolbarConfig) {
+    return (
+      <ButtonGroup key={name}>
+        <IconButton
+          {...toolbarConfig.extraProps}
+          label="代码块"
+          iconName="code"
+          onClick={this._setCodeBlock}
+          focusOnClick={false}
+        />
+      </ButtonGroup>
+    );
+  }
+
+  _renderClearButton(name: String, toolbarConfig: ToolbarConfig) {
+    return (
+      <ButtonGroup key={name}>
+        <IconButton
+          {...toolbarConfig.extraProps}
+          label="清除格式"
+          iconName="clear"
+          onClick={this._removeInlineStyle}
+        />
+      </ButtonGroup>
+    )
+  }
+
+  _removeInlineStyle() {
+    let {editorState} = this.props;
+
+    const selection = editorState.getSelection();
+
+    let contentState = editorState.getCurrentContent();
+    const currentInlineStyle = editorState.getCurrentInlineStyle();
+
+    [
+      'BOLD',
+      'ITALIC',
+      'STRIKETHROUGH',
+      'UNDERLINE',
+    ].forEach((style) => {
+      contentState = Modifier.removeInlineStyle(
+        contentState,
+        selection,
+        style,
+      );
+    })
+
+    const removeStyles = currentInlineStyle.reduce((state, style) => {
+      return Modifier.removeInlineStyle(state, selection, style)
+    }, contentState);
+
+    const removeBlock = Modifier.setBlockType(removeStyles, selection, 'unstyled');
+
+    this.props.onChange(
+      EditorState.push(editorState, removeBlock)
+    );
+    this._focusEditor();
+  }
+
+
+  _renderVideoButton(name: string, toolbarConfig: ToolbarConfig) {
+    return (
+      <ButtonGroup key={name}>
+        <VideoIconButton
+          {...toolbarConfig.extraProps}
+          label="上传视频"
+          iconName="video-player"
+          onClick={this._setCodeBlock}
+        />
+      </ButtonGroup>
+    )
+  }
+
+  _renderSymbolButton(name: string, toolbarConfig: ToolbarConfig) {
+    return (
+      <ButtonGroup key={name}>
+        <SymbolIconButton
+          {...toolbarConfig.extraProps}
+          label="插入公式"
+          iconName="symbol"
+          onClick={this._setCodeBlock}
+        />
+      </ButtonGroup>
+    )
+  }
+
+  _renderPageBreakButton(name: string, toolbarConfig: ToolbarConfig) {
+    return (
+      <ButtonGroup key={name}>
+        <IconButton
+          {...toolbarConfig.extraProps}
+          label="插入分割线"
+          iconName="page-break"
+          onClick={this._setCodeBlock}
         />
       </ButtonGroup>
     );

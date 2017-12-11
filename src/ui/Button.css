@@ -7,7 +7,7 @@
   line-height: 36px;
   box-sizing: border-box;
   background: none #fdfdfd;
-  background: linear-gradient(to bottom, #fdfdfd 0%,#f6f7f8 100%);
+  /*background: linear-gradient(to bottom, #fdfdfd 0%,#f6f7f8 100%);*/
   /*border: 1px solid #999;*/
   border: none;
   border-radius: 2px;
@@ -17,6 +17,11 @@
   font-family: inherit;
   cursor: pointer;
   white-space: nowrap;
+  outline: none;
+}
+
+.root:hover {
+  background: #f6f6f6;
 }
 
 .root:disabled {

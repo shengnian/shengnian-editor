@@ -49,7 +49,7 @@ export default class ImageSpan extends Component {
       if (width == null || height == null) {
         // TODO: isMounted?
         this.setState({width: image.width, height: image.height});
-        Entity.mergeData(
+        this.props.contentState.mergeEntityData(
           this.props.entityKey,
           {
             width: image.width,
@@ -98,7 +98,7 @@ export default class ImageSpan extends Component {
   _handleResize(event: Object, data: Object) {
     const {width, height} = data.size;
     this.setState({width, height});
-    Entity.mergeData(
+    this.props.contentState.mergeEntityData(
       this.props.entityKey,
       {width, height}
     );

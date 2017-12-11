@@ -51,7 +51,7 @@ export default class CodeBlock extends React.Component {
   }
 
   _showLanguages  = (e) => {
-    clearTimeout(this._hideLanguagesTimeout)
+    // clearTimeout(this._hideLanguagesTimeout)
 
     const { block, blockProps } = this.props
     const { topOffset, leftOffset, setSupportedLang, getEditorState, onChange } = blockProps
@@ -78,18 +78,17 @@ export default class CodeBlock extends React.Component {
     if (toElem && toElem.tagName.toLowerCase() === 'input') {
       return;
     }
-    const { block, blockProps } = this.props
+    const { blockProps } = this.props
     const { setSupportedLang } = blockProps
-    // const data = block.getData();
 
-    this._hideLanguagesTimeout = setTimeout(() => {
-      setSupportedLang({
-        position: {
-          left: -1180,
-          top: -999
-        }
-      })
-    }, 10)
+    // this._hideLanguagesTimeout = setTimeout(() => {
+    setSupportedLang({
+      position: {
+        left: -1180,
+        top: -999
+      }
+    })
+    // }, 10)
   }
 
   _bindOrRmoveMouseOver = (isBind = true) => {
